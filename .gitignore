@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+venv/
+.venv/
+
+# Secrets
+gcp_key.json
+
+# Databases
+data/*.db
+
+# OS
+Thumbs.db
+.DS_Store
