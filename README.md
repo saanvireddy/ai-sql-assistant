@@ -52,7 +52,7 @@ Results + Summary + Charts
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-sql-assistant.git
+git clone https://github.com/saanvireddy/ai-sql-assistant.git
 cd ai-sql-assistant
 ```
 
