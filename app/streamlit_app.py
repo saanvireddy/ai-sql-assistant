@@ -96,7 +96,7 @@ if st.button("Run"):
         st.info("No rows returned.")
         st.stop()
 
-    st.dataframe(df, width=True)
+    st.dataframe(df, use_container_width=True, height=300)
 
     # 7) Simple summary
     st.subheader("Summary")
