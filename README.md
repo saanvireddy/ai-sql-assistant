@@ -1,3 +1,14 @@
+---
+title: AI SQL Assistant
+emoji: 🤖
+colorFrom: blue
+colorTo: purple
+sdk: streamlit
+sdk_version: "1.32.0"
+app_file: app/streamlit_app.py
+pinned: false
+---
+
 # AI Powered SQL Analytics Assistant
 
 An end-to-end AI-powered SQL analytics assistant that converts natural language questions into validated SQL queries using schema-aware prompting. The system safely executes queries and presents results with summaries and visualizations through an interactive Streamlit interface.
