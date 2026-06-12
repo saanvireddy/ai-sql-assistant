@@ -8,7 +8,7 @@ PROJECT_ID = "ai-sql-assistant-483420"   # keep your real project id
 LOCATION = "us-central1"
 
 # Toggle this flag
-USE_GEMINI = False   # <-- set True only when billing is enabled
+USE_GEMINI = True
 
 def generate_sql_with_gemini(prompt: str) -> str:
     if not USE_GEMINI:
