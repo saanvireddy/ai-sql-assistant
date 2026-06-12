@@ -22,7 +22,7 @@ from execution.sqlite_runner import execute_sql
 DB_PATH = "data/demo.db"
 
 st.set_page_config(page_title="AI SQL Assistant", layout="wide")
-st.title("AI Powered SQL Assistant (Local Version)")
+st.title("AI Powered SQL Assistant")
 
 st.write(
     "Type a plain-English question. The system generates SQL, validates it, executes it, and shows results."
