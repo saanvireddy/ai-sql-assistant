@@ -1,5 +1,9 @@
 import sys
 import os
+import subprocess
+
+if not os.path.exists("data/ecommerce.db"):
+    subprocess.run(["python", "data/setup_db.py"], check=True)
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
