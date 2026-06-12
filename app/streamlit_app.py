@@ -102,10 +102,14 @@ if st.button("Run"):
     st.subheader("Summary")
     st.write(f"Returned **{len(df)}** rows and **{len(df.columns)}** columns.")
 
-    # 8) Chart (auto)
+# 8) Chart (auto)
     st.subheader("Chart")
     numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+    text_cols = df.select_dtypes(include=["object"]).columns.tolist()
     if numeric_cols:
-        st.bar_chart(df[numeric_cols])
+        chart_df = df[numeric_cols].copy()
+        if text_cols:
+            chart_df.index = df[text_cols[0]]
+        st.bar_chart(chart_df)
     else:
         st.info("No numeric columns available to chart.")
