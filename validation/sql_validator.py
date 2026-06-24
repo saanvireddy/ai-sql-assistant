@@ -39,7 +39,7 @@ def validate_sql(sql: str, allowed_tables: List[str]) -> Tuple[bool, str]:
             pass  # columns are allowed, so we skip strict table check here
 
     # Rule 4: JOIN must have ON
-    if "JOIN" in sql_upper and " ON " not in sql_upper:
+    if "JOIN" in sql_upper and not re.search(r'\bON\b', sql_upper):
         return False, "JOIN detected without ON condition."
 
     # Rule 5: LIMIT enforcement
