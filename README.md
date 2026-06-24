@@ -8,144 +8,127 @@ sdk_version: "1.32.0"
 app_file: app/streamlit_app.py
 pinned: false
 ---
+# 🤖 AI SQL Analytics Assistant
 
-# AI Powered SQL Analytics Assistant
+An agentic NL-to-SQL system that converts plain-English questions into validated SQL queries, executes them, and explains the results — with conversational memory for follow-up questions.
 
-An end-to-end AI-powered SQL analytics assistant that converts natural language questions into validated SQL queries using schema-aware prompting. The system safely executes queries and presents results with summaries and visualizations through an interactive Streamlit interface.
-
-This project is designed to mirror real-world GenAI system architecture, emphasizing reliability, safety, modularity, and cost-aware AI integration.
-
----
-
-# Key Features
-
-- Natural language to SQL conversion  
-- Schema-aware prompting using live database metadata  
-- Automated SQL validation (SELECT-only, safe joins, LIMIT enforcement)  
-- Secure query execution with result visualization  
-- Streamlit-based self-service analytics UI  
-- Modular LLM layer with Vertex AI Gemini and local fallback  
+Live Demo → [Hugging Face Space](https://huggingface.co/spaces/saanvireddy/ai-sql-assistant)
 
 ---
 
-## System Architecture
+## Architecture
 
 ```
 User Question
-   ↓
-Metadata Extraction (schema + sample rows)
-   ↓
-Prompt Engineering
-   ↓
-LLM Layer (Gemini via Vertex AI OR Local Fallback)
-   ↓
-SQL Validation Guardrails
-   ↓
-SQL Execution Engine
-   ↓
-Results + Summary + Charts
+      ↓
+LangGraph ReAct Agent
+      ↓
+┌─────────────────────────────────────┐
+│  Step 1: SQL Generation             │
+│  Llama 3.3 70B + schema-aware prompt│
+└────────────────┬────────────────────┘
+                 ↓
+┌─────────────────────────────────────┐
+│  Step 2: Validation + Execution     │
+│  Guardrails → SQLite runner         │
+└────────────────┬────────────────────┘
+                 ↓
+┌─────────────────────────────────────┐
+│  Step 3: Result Explanation         │
+│  LLM summarizes in plain English    │
+└────────────────┬────────────────────┘
+                 ↓
+     Chat UI + Auto Chart
 ```
+
+---
+
+## Key Features
+
+- **LangGraph agentic pipeline** — 3-step ReAct agent (generate → execute → explain)
+- **Conversational memory** — follow-up questions like "now show only the top 5" work seamlessly
+- **Schema-aware prompting** — live DB metadata injected into every prompt
+- **SQL guardrails** — SELECT-only enforcement, JOIN validation, LIMIT enforcement
+- **Auto chart generation** — bar charts auto-rendered from query results
+- **Learning mode** — toggleable prompt, metadata, SQL, and validation views
 
 ---
 
 ## Tech Stack
 
-- **Language:** Python  
-- **Frontend:** Streamlit  
-- **Database:** SQLite (local demo)  
-- **AI / LLM:** Vertex AI Gemini, LangChain  
-- **Data Processing:** Pandas  
-- **Design Concepts:** Prompt Engineering, Guardrails, Modular AI Pipelines  
+| Layer | Technology |
+|---|---|
+| LLM | Llama 3.3 70B via Groq |
+| Agent framework | LangGraph |
+| LLM orchestration | LangChain |
+| Frontend | Streamlit |
+| Database | SQLite |
+| Validation | Custom SQL guardrails |
+| Data processing | Pandas |
 
 ---
 
-## Run the Project Locally
+## Run Locally
 
-### 1. Clone the repository
 ```bash
 git clone https://github.com/saanvireddy/ai-sql-assistant.git
 cd ai-sql-assistant
-```
-
-### 2. Create and activate virtual environment
-```bash
 python -m venv venv
 venv\Scripts\activate
-```
-
-### 3. Install dependencies
-```bash
 pip install -r requirements.txt
-```
-
-### 4. Create demo database
-```bash
 python data/setup_db.py
 ```
 
-### 5. Launch the application
+Set your API key:
+```bash
+$env:GROQ_API_KEY="your_groq_api_key"
+```
+
+Run:
 ```bash
 streamlit run app/streamlit_app.py
 ```
 
----
-
-## Vertex AI Gemini Integration
-
-The system integrates **Vertex AI Gemini** using LangChain for natural language to SQL generation.
-
-To ensure cost efficiency and easy local demos:
-- Gemini integration is configurable
-- A local fallback SQL generator is used when cloud billing is disabled
-
-This reflects real-world production systems where AI usage is governed by cost, reliability, and environment constraints.
+Get a free Groq API key at [console.groq.com](https://console.groq.com)
 
 ---
 
 ## Example Queries
 
-- Show total amount spent by each customer  
-- Number of orders by city  
-- List all orders placed in December  
-- Which customer spent the most money  
+- *Show total revenue by customer*
+- *How many orders were placed in December?*
+- *Which city has the most orders?*
+- *Now show only the top 3* ← follow-up with memory
 
 ---
-## Performance Results
 
-- **95%+ accuracy** on complex multi-table SQL queries
-- **<2% error rate** after validation checks
-- **8% → <2% reduction** in hallucinations
+## Project Structure
 
-## Quick Example
-
-```python
-# User asks in natural language:
-"Show total orders by customer"
-
-# System does:
-# 1. Understands intent
-# 2. Generates safe SQL
-# 3. Validates query
-# 4. Executes & summarizes results
+```
+ai-sql-assistant/
+├── agent/
+│   └── sql_agent.py        # LangGraph pipeline (3-step agent)
+├── app/
+│   └── streamlit_app.py    # Chat UI with toggle display options
+├── data/
+│   └── setup_db.py         # SQLite demo database setup
+├── execution/
+│   └── sqlite_runner.py    # Query execution engine
+├── llm/
+│   ├── gemini_llm.py       # Gemini integration (original)
+│   ├── mock_llm.py         # Fallback SQL generator
+│   └── prompt_builder.py   # Schema-aware prompt builder
+├── metadata/
+│   └── sqlite_metadata.py  # Live schema + sample row extractor
+├── validation/
+│   └── sql_validator.py    # SQL guardrails
+└── requirements.txt
 ```
 
-
-## Security & Best Practices
-
-- Service account credentials are excluded via `.gitignore`
-- No secrets or databases are committed to the repository
-- SQL validation prevents unsafe query execution
-- Modular design enables easy upgrades and replacements
-
-
 ---
 
-## Future Enhancements
+## Author
 
-- BigQuery integration for large-scale datasets - Role-based access control  
-- Query confidence scoring  
-- Caching and performance optimization  
-- Deployment to cloud platforms (Streamlit Cloud / Cloud Run)  
-
----
-
+**Saanvi Reddy Baradi**
+MS AI & Business Analytics — University of South Florida
+[Portfolio](https://saanvireddy.github.io/saanvi-portfolio/) · [LinkedIn](https://www.linkedin.com/in/saanvi-reddy-baradi/) · [GitHub](https://github.com/saanvireddy)
