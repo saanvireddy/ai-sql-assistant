@@ -29,6 +29,7 @@ def _build_schema_str() -> str:
         sample = info.get("sample_rows", [{}])[0]
         lines.append(f"Table `{table}` — exact columns: {', '.join(col_names)}")
         lines.append(f"  Sample row: {sample}")
+        lines.append(f"  IMPORTANT: Only use these exact column names for `{table}`: {', '.join(col_names)}")
     return "\n".join(lines)
 
 
