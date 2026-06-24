@@ -57,6 +57,9 @@ If this is a follow-up question, use the conversation above to understand contex
 Rules:
 - SELECT only — no INSERT, UPDATE, DELETE, DROP
 - Use ONLY the exact column names shown in the schema above
+- Always use COUNT(*) for counting rows, never COUNT(column_name)
+- For "which X has most Y" questions, always use JOIN not subqueries
+- JOIN example: SELECT c.city, COUNT(*) as order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city ORDER BY order_count DESC LIMIT 100
 - Always add LIMIT 100
 - Return ONLY the raw SQL query, no markdown, no backticks, no explanation
 """
