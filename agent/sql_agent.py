@@ -102,9 +102,38 @@ Speak naturally as if explaining to a business user."""
     response = llm.invoke(prompt)
     return response.content.strip()
 
+def _is_data_question(question: str) -> bool:
+    prompt = f"""You are a classifier. Decide if this is a data/analytics question that requires a SQL query.
+
+Question: "{question}"
+
+Reply with only YES or NO.
+- YES if it asks about data, numbers, customers, orders, revenue, cities, dates, counts, or analysis
+- NO if it is a greeting, thanks, random text, or unrelated to data"""
+    response = llm.invoke(prompt)
+    return response.content.strip().upper().startswith("YES")
 
 # ── Public interface ──────────────────────────────────────────────────────────
 def run_agent(question: str, chat_history: list[dict]) -> dict:
+    # Guard: greetings
+    greetings = ["hi", "hello", "hey", "thanks", "thank you", "bye", "ok", "okay"]
+    if question.strip().lower() in greetings:
+        return {
+            "answer": "Hi! Ask me a question about your data and I'll generate the SQL and explain the results for you.",
+            "sql": "",
+            "results_json": "",
+            "error": None,
+        }
+
+    # Guard: non-data questions
+    if not _is_data_question(question):
+        return {
+            "answer": "I can only answer questions about your data. Try asking something like 'Show total revenue by customer' or 'How many orders were placed in December?'",
+            "sql": "",
+            "results_json": "",
+            "error": None,
+        }
+
     try:
         sql = _generate_sql(question, chat_history)
         results_json, error = _execute_query(sql)
